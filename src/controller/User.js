@@ -1,10 +1,13 @@
 // user.controller.js
 const User = require('../model/user.model.js');
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
 
 // Create
 exports.createUser = async (req, res) => {
     try {
         const user = new User(req.body);
+        user.password = bcrypt.hashSync(user.password, saltRounds);
         await user.save();
         res.status(201).json(user);
     } catch (error) {
