@@ -18,12 +18,39 @@ exports.createUser = async (req, res) => {
 // Read
 exports.getUsers = async (req, res) => {
     try {
-        const users = await User.find();
+        const users = await User.find().select('-password');
         res.status(200).json(users);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
 };
+
+exports.getUserByEmail = async (req, res) => {
+    const {email, password} = req.body;
+
+    try {
+        const user = await User.findOne({ email: email });
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        const match = await bcrypt.compare(password, user.password);
+
+        if(match){
+            res.status(200).json(user);
+        } else {
+            res.status(401).json({
+                Access: "Negado!!",
+                Info: match
+            });
+        }
+
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
 
 // Update
 exports.updateUser = async (req, res) => {
