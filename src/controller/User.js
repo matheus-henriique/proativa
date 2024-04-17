@@ -6,12 +6,20 @@ const saltRounds = 10;
 // Create
 exports.createUser = async (req, res) => {
     try {
-        const user = new User(req.body);
-        user.password = bcrypt.hashSync(user.password, saltRounds);
-        await user.save();
-        res.status(201).json(user);
+        const existingUser = await User.findOne({ email: req.body.email });
+        if (existingUser) {
+            return res.status(400).json({ message: "User is already registered" });
+        }
+        
+        const newUser = new User(req.body);
+        newUser.password = await bcrypt.hash(newUser.password, saltRounds);
+        
+        await newUser.save();
+        
+        res.status(201).json(newUser);
     } catch (error) {
-        res.status(400).json({ message: error.message });
+        console.error("Error creating user:", error);
+        res.status(500).json({ message: "Internal Server Error" });
     }
 };
 
@@ -25,11 +33,29 @@ exports.getUsers = async (req, res) => {
     }
 };
 
+exports.getUserByEmail = async (req, res) => {
+    const {email} = req.body;
+
+    try {
+        const user = await User.findOne({ email: email });
+
+        if (user) {
+            res.status(200).json(user);
+        } else {
+            res.status(200).json({
+                message: "User not found!"
+            });
+        }
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
 // Update
 exports.updateUser = async (req, res) => {
     try {
-        const { id } = req.params;
-        const user = await User.findByIdAndUpdate(id, req.body, { new: true });
+        const { id, data } = req.body;
+        const user = await User.findByIdAndUpdate(id, data, { new: true });
         res.status(200).json(user);
     } catch (error) {
         res.status(400).json({ message: error.message });
@@ -39,7 +65,8 @@ exports.updateUser = async (req, res) => {
 // Delete
 exports.deleteUser = async (req, res) => {
     try {
-        const { id } = req.params;
+        const { id } = req.body;
+        console.log(id)
         await User.findByIdAndDelete(id);
         res.status(200).json({ message: 'User deleted successfully' });
     } catch (error) {
