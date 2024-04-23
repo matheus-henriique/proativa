@@ -10,6 +10,10 @@ const PORT = process.env.PORT || 3000;
 const user = require('./src/routes/user.router.js');
 const auth = require('./src/routes/auth.router.js');
 
+app.get("/helloworld", (req, res)=>{
+    res.send("Hello World!!");
+});
+
 app.use(auth);
 app.use(user);
 
