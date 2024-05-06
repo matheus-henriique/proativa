@@ -10,7 +10,7 @@ const authRouter = require('./src/routes/auth.router');
 app.use(express.json());
 app.use('/api/auth', authRouter);
 
-app.get('/api/helloworld', (req, res) => {
+app.get('/helloworld', (req, res) => {
   res.send('Hello World!!');
 });
 
