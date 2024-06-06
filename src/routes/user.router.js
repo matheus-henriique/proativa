@@ -1,12 +1,13 @@
 const express = require('express');
 const router = express.Router();
 const userController = require('../controller/User');
+const auth = require('../controller/Auth.controller');
 
 // Rotas
-router.post('/user', userController.createUser);
-router.get('/users', userController.getUsers);
-router.get('/user/email', userController.getUserByEmail);
-router.put('/user', userController.updateUser);
-router.delete('/user', userController.deleteUser);
+router.post('/user', auth.authenticateToken, userController.createUser);
+router.get('/users', auth.authenticateToken, userController.getUsers);
+router.get('/user/email', auth.authenticateToken, userController.getUserByEmail);
+router.put('/user', auth.authenticateToken, userController.updateUser);
+router.delete('/user', auth.authenticateToken, userController.deleteUser);
 
 module.exports = router

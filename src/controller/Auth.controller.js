@@ -1,5 +1,6 @@
 const User = require('../model/user.model.js');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 exports.auth = async (req, res) => {
     const {email, password} = req.body;
@@ -42,6 +43,19 @@ exports.register = async (req, res) => {
     }
 };
 
+exports.authenticateToken = async (req, res, next) => {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1]; 
+
+    if (token == null) return res.status(401).json({ error_text: 'Acesso negado. Nenhum token fornecido.' });
+
+    jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+        if (err) return res.status(403).json({ error_text: 'Token inválido ou expirado.' });
+        req.user = user;
+        next();
+    });
+};
+
 exports.login = async (req, res) => {
     const { email, password } = req.body;
 
@@ -49,7 +63,7 @@ exports.login = async (req, res) => {
         const user = await User.findOne({ email });
 
         if (!user) {
-            return res.status(404).json({ error: 'User not found' });
+            return res.status(404).json({ error_text: 'User not found' });
         }
 
         const passwordMatch = await bcrypt.compare(password, user.password);
@@ -61,6 +75,6 @@ exports.login = async (req, res) => {
         const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
         res.status(200).json({ token });
     } catch (error) {
-        res.status(500).json({ error: 'Internal server error' });
+        res.status(500).json({ error: error, error_text: 'Internal server error' });
     }
 };
