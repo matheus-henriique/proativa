@@ -9,4 +9,8 @@ router.get('/equipamentos/name', auth.authenticateToken, equipamentoController.g
 router.put('/equipamentos/:id', auth.authenticateToken, equipamentoController.updateEquipamento);
 router.delete('/equipamentos/:id', auth.authenticateToken, equipamentoController.deleteEquipamento);
 
+router.post('/:equipamentoId/remove-cliente', auth.authenticateToken, equipamentoController.removeCliente);
+router.post('/:equipamentoId/assign-cliente/:clienteId', auth.authenticateToken, equipamentoController.assignCliente);
+
+
 module.exports = router;
