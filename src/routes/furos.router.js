@@ -1,13 +1,11 @@
 const express = require('express');
 const router = express.Router();
-const auth = require('../controller/Auth.controller');
-
 const furoController = require('../controller/Furos.controller');
 
-router.post('/furos', auth.authenticateToken, furoController.createFuro);
-router.get('/furos', auth.authenticateToken, furoController.getAllFuros);
-router.get('/furos/:id', auth.authenticateToken, furoController.getFuroById);
-router.put('/furos/:id', auth.authenticateToken, furoController.updateFuro);
-router.delete('/furos/:id', auth.authenticateToken, furoController.deleteFuro);
+router.post('/furos', furoController.createFuro);
+router.get('/furos', furoController.getAllFuros);
+router.get('/furos/:id', furoController.getFuroById);
+router.put('/furos/:id', furoController.updateFuro);
+router.delete('/furos/:id', furoController.deleteFuro);
 
 module.exports = router;
