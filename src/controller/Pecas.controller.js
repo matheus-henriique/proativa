@@ -27,7 +27,7 @@ exports.getAllPecas = async (req, res) => {
 
 exports.getPecaByNome = async (req, res) => {
     try {
-      const peca = await Peca.findOne({ nome: req.params.nome });
+      const peca = await Peca.findOne({ nome: req.body.nome });
       if (!peca) {
         res.status(404).json({ error_text: 'Peça não encontrada' });
       } else {
