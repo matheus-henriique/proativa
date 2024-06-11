@@ -11,17 +11,30 @@ exports.createCliente = async (req, res) => {
     await newCliente.save();
 
     res.status(201).json(newCliente);
-  } catch (err) {
-    res.status(400).json({ error_text: 'Erro ao criar cliente', error: err });
+  } catch (error) {
+    res.status(500).send({ error_text: 'Erro no servidor', error: error });
   }
 };
 
-exports.readCliente = async (req, res) => {
+exports.getAllCliente = async (req, res) => {
   try {
     const clientes = await Cliente.find();
     res.status(200).json(clientes);
-  } catch (err) {
-    res.status(404).json({ error_text: 'Clientes não encontrados', error: err });
+  } catch (error) {
+    res.status(500).send({ error_text: 'Erro no servidor', error: error });
+  }
+};
+
+exports.getClienteById = async (req, res) => {
+  try {
+    const cliente = await Cliente.findById(req.params.id);
+    if (!cliente) {
+      res.status(404).json({ error_text: 'Cliente não encontrado' });
+    } else {
+      res.status(200).json(cliente);
+    }
+  } catch (error) {
+    res.status(500).send({ error_text: 'Erro no servidor', error: error });
   }
 };
 
@@ -29,16 +42,21 @@ exports.updateCliente = async (req, res) => {
   try {
     const updatedCliente = await Cliente.findByIdAndUpdate(req.params.id, req.body, { new: true });
     res.status(200).json(updatedCliente);
-  } catch (err) {
-    res.status(400).json({ error_text: 'Erro ao atualizar cliente', error: err });
+  } catch (error) {
+    res.status(500).send({ error_text: 'Erro no servidor', error: error });
   }
 };
 
 exports.deleteCliente = async (req, res) => {
   try {
-    await Cliente.findByIdAndDelete(req.params.id);
-    res.status(204).json({ message: 'Cliente deletado' });
-  } catch (err) {
-    res.status(400).json({ error_text: 'Erro ao deletar cliente', error: err });
+    const cliente = await Cliente.findById(req.params.id);
+    if (!cliente) {
+      res.status(404).json({ error_text: 'Cliente não encontrado' });
+    } else {
+      await Cliente.findByIdAndDelete(req.params.id);
+      res.status(204).json({ message: 'Cliente deletado com sucesso' });
+    }
+  } catch (error) {
+    res.status(500).send({ error_text: 'Erro no servidor', error: error });
   }
 };
