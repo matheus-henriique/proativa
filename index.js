@@ -9,6 +9,7 @@ app.use(express.json());
 const auth = require('./src/routes/auth.router');
 const user = require('./src/routes/user.router');
 const cliente = require('./src/routes/cliente.router');
+const Equipamento = require('./src/routes/equipamentos.router');
 
 app.get('/helloworld', (req, res) => {
   res.send('Hello World!!');
@@ -16,9 +17,9 @@ app.get('/helloworld', (req, res) => {
 
 app.use(auth);
 
-
 app.use(user);
 app.use(cliente);
+app.use(Equipamento);
 
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
