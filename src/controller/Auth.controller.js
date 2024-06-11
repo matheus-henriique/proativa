@@ -2,58 +2,16 @@ const User = require('../model/user.model.js');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
-exports.auth = async (req, res) => {
-    const {email, password} = req.body;
-
-    try {
-        const user = await User.findOne({ email: email });
-
-        if (!user) {
-            return res.status(404).json({ message: 'User not found' });
-        }
-
-        const match = await bcrypt.compare(password, user.password);
-
-        if(match){
-            res.status(200).json({
-                Access: true
-            });
-        } else {
-            res.status(401).json({
-                Access: "Negado!!",
-                Info: match
-            });
-        }
-
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-};
-
 exports.register = async (req, res) => {
-    const { email, password } = req.body;
-
     try {
-        const hashedPassword = await bcrypt.hash(password, 10);
-        const newUser = new User({ email, password: hashedPassword });
+        const hashedPassword = await bcrypt.hash(req.body.password, 10);
+        req.body.password = hashedPassword;
+        const newUser = new User(req.body);
         await newUser.save();
-        res.status(201).json({ message: 'User registered successfully' });
+        res.status(201).json({ message: 'Usuário registrado!' });
     } catch (error) {
-        res.status(500).json({ error: 'Internal server error' });
+        res.status(500).json({ error_text: 'Erro no servidor', error });
     }
-};
-
-exports.authenticateToken = async (req, res, next) => {
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1]; 
-
-    if (token == null) return res.status(401).json({ error_text: 'Acesso negado. Nenhum token fornecido.' });
-
-    jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-        if (err) return res.status(403).json({ error_text: 'Token inválido ou expirado.' });
-        req.user = user;
-        next();
-    });
 };
 
 exports.login = async (req, res) => {

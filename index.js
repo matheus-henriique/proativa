@@ -12,7 +12,7 @@ const cliente = require('./src/routes/cliente.router');
 const equipamento = require('./src/routes/equipamentos.router');
 const pecas = require('./src/routes/pecas.router');
 const furos = require('./src/routes/furos.router');
-const {authenticateToken} = require('./src/controller/Auth.controller');
+const {authenticateToken} = require('./src/middlewares/auth.middleware.js');
 
 app.get('/helloworld', (req, res) => {
   res.send('Hello World!!');

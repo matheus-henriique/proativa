@@ -3,6 +3,7 @@ const router = express.Router();
 const authController = require('../controller/Auth.controller');
 
 // Rotas
-router.post('/auth', authController.login);
+router.post('/login', authController.login);
+router.post('/register', authController.register);
 
 module.exports = router
