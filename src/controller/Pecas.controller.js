@@ -25,18 +25,18 @@ exports.getAllPecas = async (req, res) => {
   }
 };
 
-exports.getPecaById = async (req, res) => {
-  try {
-    const peca = await Peca.findById(req.params.id);
-    if (!peca) {
-      res.status(404).json({ error_text: 'Peça não encontrada' });
-    } else {
-      res.status(200).json(peca);
+exports.getPecaByNome = async (req, res) => {
+    try {
+      const peca = await Peca.findOne({ nome: req.params.nome });
+      if (!peca) {
+        res.status(404).json({ error_text: 'Peça não encontrada' });
+      } else {
+        res.status(200).json(peca);
+      }
+    } catch (error) {
+      res.status(500).send({ error_text: 'Erro no servidor', error: error });
     }
-  } catch (error) {
-    res.status(500).send({ error_text: 'Erro no servidor', error: error });
-  }
-};
+};  
 
 exports.updatePeca = async (req, res) => {
   try {
