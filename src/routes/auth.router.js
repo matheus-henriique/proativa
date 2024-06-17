@@ -5,5 +5,7 @@ const authController = require('../controller/Auth.controller');
 // Rotas
 router.post('/login', authController.login);
 router.post('/register', authController.register);
+router.post('/reset-password', authController.requestResetPassword);
+router.post('/new-password', authController.resetPassword);
 
 module.exports = router
