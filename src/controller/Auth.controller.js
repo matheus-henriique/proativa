@@ -54,7 +54,6 @@ exports.requestResetPassword = async (req, res) => {
         return res.status(404).json({ message: 'Usuário não registrado!'});
     }
 
-    console.log(user);
     const code = generateResetCode();
     user.resetCode = code;
     user.resetTokenExpiration = Date.now() + 3600000;
