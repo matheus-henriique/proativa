@@ -15,6 +15,7 @@ exports.createEquipamento = async (req, res) => {
 exports.getAllEquipamentos = async (req, res) => {
   try {
     const equipamentos = await Equipamento.find();
+    console.log(equipamentos);
     res.status(200).json(equipamentos);
   } catch (error) {
     res.status(500).send({ error_text: 'Erro no servidor', error: error });
