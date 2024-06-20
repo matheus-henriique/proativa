@@ -55,6 +55,11 @@ exports.getUserByEmail = async (req, res) => {
 exports.updateUser = async (req, res) => {
     try {
         const { id, data } = req.body;
+
+        if(data.password){
+            data.password = await bcrypt.hash(data.password, saltRounds);
+        }
+
         const user = await User.findByIdAndUpdate(id, data, { new: true });
         res.status(200).json(user);
     } catch (error) {
